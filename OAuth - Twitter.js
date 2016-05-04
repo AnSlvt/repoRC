@@ -2,7 +2,10 @@ var express   = require('express')
     , request = require('request')
     , qs      = require('querystring')
     , oauth   = require('./config/configTW')
-    , app     = express();
+    , app     = express()
+    , http = require('http')
+    , server = http.Server(app)
+    , io = require('socket.io')(server);
 
 // User id and screen_name
 var UID
@@ -10,6 +13,9 @@ var UID
 
 var oauthToken = ""
   , oauthTokenSecret = "";
+
+var followers
+  , stream = null;
 
 app.get('/', function (req, res)
 {
@@ -24,14 +30,14 @@ app.get('/', function (req, res)
         oauthToken = reqData.oauth_token;
         oauthTokenSecret = reqData.oauth_token_secret;
 
-        //Step-2 Redirecting the user by creating a link
-        //and allowing the user to click the link
+        // Step-2 Redirecting the user by creating a link
+        // and allowing the user to click the link
         var uri = 'https://api.twitter.com/oauth/authenticate' + '?' + qs.stringify({oauth_token: oauthToken});
         res.send('<a href = "' + uri + '"> Sign in with twitter </a>');
     });
 });
 
-//Callback to handle post authentication.
+// Callback to handle post authentication.
 app.get("/signin-with-twitter", function(req, res)
 {
     oauth.token_secret = oauthTokenSecret;
@@ -56,22 +62,7 @@ app.get("/signin-with-twitter", function(req, res)
         twitterScreenName = authenticatedData.screen_name;
         console.log("\n\nAccount info");
         console.log(UID, twitterScreenName);
-    });
-
-    res.send('I made you my bitch <br/> <a href="http://localhost:3000/get-my-last-rt/">Retrieve my rt</a> <br/> ' +
-        '<a href="http://localhost:3000/get-my-followers/">Retrieve my followers</a>');
-});
-
-app.get('/get-my-last-rt', function(req, res)
-{
-    var url = "https://api.twitter.com/1.1/statuses/retweets_of_me.json";
-    var params = "?count=1";
-    request.get( {url: url.concat(params), oauth: oauth}, function(e, r, body)
-    {
-        var RTinfo = JSON.parse(body)[0];
-        res.send(RTinfo.text + "<br /> Created at: " + RTinfo.created_at + " by " + twitterScreenName);
-        console.log("\n\nLast rt");
-        console.log(RTinfo);
+        res.redirect('/get-my-followers');
     });
 });
 
@@ -79,20 +70,61 @@ app.get('/get-my-followers', function(req, res)
 {
     var url = 'https://api.twitter.com/1.1/followers/list.json';
     var params = '?user_id=' + UID;
-    var names = [];
+    var IDs = '';
     request.get( {url: url.concat(params), oauth: oauth}, function(e, r, body)
     {
         var jsonb = JSON.parse(body);
         var usr = jsonb.users;
         for (var i = 0; i < usr.length; i++)
         {
-            names.push(usr[i].name);
+            IDs += usr[i].id_str;
+            if (i < usr.length - 1) IDs += ',';
         }
-        res.send(names);
+        followers = IDs;
+        console.log(followers);
+        res.redirect('/socket');
     });
 });
 
-app.listen(3000, function()
+app.get('/socket', function(req, res)
 {
-    console.log('Server up: http://localhost:3000');
+    console.log("================== Sono dentro socket ====================");
+    //Create web sockets connection.
+    io.sockets.on('connection', function(socket)
+    {
+        socket.emit("connected");
+        socket.on("start tweets", function()
+        {
+            if(stream === null)
+            {
+                //Connect to twitter stream passing in filter for followers.
+                var uri = 'https://stream.twitter.com/1.1/statuses/filter.json';
+                var params = '?follow=' + followers;
+                console.log("Sono dentro start tweet");
+                request.post( { url: uri.concat(params), oauth: oauth }, function(e, r, body)
+                {
+                    //twit.stream('statuses/filter', {'locations': '-180,-90,180,90'}, function(s) {
+                        /*stream = s;
+                        stream.on('data', function(data) {
+                            // Does the JSON result have coordinates
+                            if (data.coordinates && data.coordinates !== null) {
+                                //If so then build up some nice json and send out to web sockets
+                                var outputPoint = {"lat": data.coordinates.coordinates[0], "lng": data.coordinates.coordinates[1]};
+
+                                socket.broadcast.emit("twitter-stream", outputPoint);
+
+                                //Send out to web sockets channel
+                                */
+                                socket.emit('twitter-stream', outputPoint);/*
+                            }
+                        }*/
+                    //});
+                    console.log(body);
+                    console.log(r);
+                });
+            }
+        });
+    });
 });
+
+server.listen(3000);
