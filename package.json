@@ -1,0 +1,23 @@
+{
+  "name": "RCProject",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AnSlvt/repoRC"
+  },
+  "author": "Andrea Salvati",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/AnSlvt/repoRC/issues"
+  },
+  "dependencies": {
+    "express": "~4.13.4",
+    "request": "~2.72.0",
+    "querystring": "~0.2.0"
+  }
+}
