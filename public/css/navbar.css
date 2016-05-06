@@ -1,0 +1,44 @@
+nav ul {
+
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #33c;
+}
+
+/* Position of the sign in button */
+nav ul li {
+
+    float: right;
+}
+
+/* Style for the title */
+nav ul div li {
+
+    float: left;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    color: white;
+    text-shadow: 2px 2px #03c;
+    font-size: 18px;
+    font-style: italic;
+    font-family: sans-serif;
+}
+
+/* Style for the sign in button */
+nav ul li a {
+
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+nav ul li a:hover {
+
+    background-color: #009;
+}
