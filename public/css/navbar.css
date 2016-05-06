@@ -13,6 +13,12 @@ nav ul li {
     float: right;
 }
 
+nav ul li img {
+
+    width: 30px;
+    padding: 10px 0px 0px 0px;
+}
+
 /* Style for the title */
 nav ul div li {
 
@@ -21,7 +27,7 @@ nav ul div li {
     padding: 14px 16px;
     text-decoration: none;
     color: white;
-    text-shadow: 2px 2px #03c;
+    text-shadow: 2px 2px #292f33;
     font-size: 18px;
     font-style: italic;
     font-family: sans-serif;
