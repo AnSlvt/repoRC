@@ -6,15 +6,17 @@
     <script src="../socket.io/socket.io.js"></script>
 
     <!-- Google maps API -->
-    <link href="https://google-developers.appspot.com/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" />
-	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbuqJ7ZZ4tKujhvm0ZpxKzS93XumF_TFo&libraries=visualization"></script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbuqJ7ZZ4tKujhvm0ZpxKzS93XumF_TFo&libraries=visualization&callback=initMap">
+    </script>
 
-    <!-- My scripts -->
-    <link  rel="stylesheet" type="text/css" href="./css/navbar.css" />
-    <script type="text/javascript" src="/js/init.js"></script>
+    <!-- My scripts and style -->
+    <link rel="stylesheet" type="text/css" href="./css/map.css" />
+    <link rel="stylesheet" type="text/css" href="./css/navbar.css" />
+    <script type="text/javascript" src="./js/init.js"></script>
 
 </head>
-<body onload="initMap()">
+<body>
     <nav>
         <ul>
             <li>
@@ -29,6 +31,13 @@
         </ul>
     </nav>
     <main>
+        <div id="floating-panel">
+            <button onclick="toggleHeatmap()">Toggle Heatmap</button>
+            <button onclick="changeGradient()">Change gradient</button>
+            <button onclick="changeRadius()">Change radius</button>
+            <button onclick="changeOpacity()">Change opacity</button>
+            <button onclick="recenter()">Center on me</button>
+        </div>
         <div id="map_canvas"></div>
     </main>
 </body>

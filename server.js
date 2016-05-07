@@ -3,6 +3,7 @@ var express   = require('express')
     , request = require('request')
     , qs      = require('querystring')
     , http    = require('http')
+    , twitter = require('twitter')
     , auth    = require('./config/configTW');
 
 // Create an express instance and set a port variable
@@ -23,7 +24,7 @@ var oauthToken = ""
   , oauthTokenSecret = "";
 
 var followers
-  , stream = null;
+  , following;
 
 app.get('/', function (req, res) {
 
@@ -76,29 +77,39 @@ app.get("/signed-with-twitter", function(req, res) {
     });
 });
 
-/*var twit = new twitter({
+var twit = new twitter({
 
     consumer_key: auth.consumer_key
     , consumer_secret: auth.consumer_secret
     , access_token_key: auth.token
     , access_token_secret: auth.token_secret
-});*/
+});
 
 var getUsersFollower = function(res) {
 
-    var url = 'https://api.twitter.com/1.1/followers/list.json';
+    var url = 'https://api.twitter.com/1.1/followers/ids.json';
     var params = '?user_id=' + UID;
-    var IDs = '';
+
     request.get({ url: url.concat(params), oauth: auth }, function(e, r, body) {
         var jsonb = JSON.parse(body);
-        var usr = jsonb.users;
-        for (var i = 0; i < usr.length; i++) {
-            IDs += usr[i].id_str;
-            if (i < usr.length - 1) IDs += ',';
-        }
-        followers = IDs;
-        console.log(followers);
+        followers = jsonb.ids;
+        /*var ids = jsonb.ids;
+        followers = '';
+        for (var i = 0; i < ids.length; i++) {
+            followers += ids[i]
+            if (i < ids.length - 1) followers += ','
+        }*/
+        getUsersFollowing(res);
+    });
+}
 
+var getUsersFollowing = function(res) {
+
+    var url = 'https://api.twitter.com/1.1/friends/ids.json';
+    var params = '?user_id=' + UID;
+    request.get({ url: url.concat(params), oauth: auth }, function(e, r, body) {
+        var jsonb = JSON.parse(body);
+        following = jsonb.ids;
         streamHandling(res);
     });
 }
@@ -116,7 +127,7 @@ var streamHandling = function(res) {
                 var url = 'https://stream.twitter.com/1.1/statuses/filter.json';
                 //var url = 'https://userstream.twitter.com/1.1/user.json';
 
-                var params = { 'follow': followers };
+                var params = { 'follow': followers.concat(following) };
                 //var params = { 'with': followers };
                 var requestParams = {
                     url: url,
@@ -125,15 +136,14 @@ var streamHandling = function(res) {
                     //headers: { 'Authorization': 'Oauth ' + JSON.stringify(auth) }
                 }
 
-                console.log(requestParams);
+                console.log(params);
 
-                request.post(requestParams, function(e, r, body) {
+                //request.post(requestParams, function(e, r, body) {
                 //request.get(requestParams, function(e, r, body) {
-                //twit.stream('statuses/filter', params, function(s) {
+                twit.stream('statuses/filter', params, function(stream) {
 
                     console.log("OK");
-                    console.log(s);
-                    stream = s;
+                    console.log(stream);
                     stream.on('data', function(data) {
 
                         console.log(data);

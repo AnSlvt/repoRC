@@ -1,22 +1,37 @@
+var map, heatmap, center;
+
 function initMap() {
 
-    //Setup Google Map
-    var myLatlng = new google.maps.LatLng(17.7850, -12.4183);
-    var myOptions = {
-        zoom: 2,
-        center: myLatlng
-    };
+    var rome = new google.maps.LatLng(41.8919300, 12.5113300);
 
-    var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+    //Setup Google Map
+    var myOptions = {
+        zoom: 13,
+        mapTypeId: google.maps.MapTypeId.SATELLITE
+    }
+
+    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
     //Setup heat map and link to Twitter array we will append data to -- Fa errore PD
-    var heatmap;
     var liveTweets = new google.maps.MVCArray();
     heatmap = new google.maps.visualization.HeatmapLayer({
         data: liveTweets,
-        radius: 25
+        map: map
     });
-    heatmap.setMap(map);
+
+    // Set the center
+    if (navigator.geolocation) {
+        alert("Please allow the geolocalization");
+        navigator.geolocation.getCurrentPosition(function(position) {
+            center = position;
+            map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+        });
+    }
+    else {
+        alert("Geolocalization does not work on you browser. We set you in Rome");
+        center = rome;
+        map.setCenter(rome);
+    }
 
     if (io !== undefined) {
 
@@ -51,4 +66,40 @@ function initMap() {
             socket.emit("start tweets");
         });
     }
+}
+
+function toggleHeatmap() {
+    heatmap.setMap(heatmap.getMap() ? null : map);
+}
+
+function changeGradient() {
+    var gradient = [
+        'rgba(0, 255, 255, 0)',
+        'rgba(0, 255, 255, 1)',
+        'rgba(0, 191, 255, 1)',
+        'rgba(0, 127, 255, 1)',
+        'rgba(0, 63, 255, 1)',
+        'rgba(0, 0, 255, 1)',
+        'rgba(0, 0, 223, 1)',
+        'rgba(0, 0, 191, 1)',
+        'rgba(0, 0, 159, 1)',
+        'rgba(0, 0, 127, 1)',
+        'rgba(63, 0, 91, 1)',
+        'rgba(127, 0, 63, 1)',
+        'rgba(191, 0, 31, 1)',
+        'rgba(255, 0, 0, 1)'
+    ]
+    heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
+}
+
+function changeRadius() {
+    heatmap.set('radius', heatmap.get('radius') ? null : 20);
+}
+
+function changeOpacity() {
+    heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
+}
+
+function recenter() {
+    map.setCenter(center.coords.latitude, center.coords.longitude);
 }
