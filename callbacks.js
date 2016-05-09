@@ -62,7 +62,7 @@ module.exports = {
             console.log("\n\nAccount info");
             console.log(UID, twitterScreenName);
 
-            getRecentTweets(UID, 100, function(coordinates) {
+            getRecentTweets(UID, 700, function(coordinates) {
                 getUsersFollower(UID, function(followers) {
                     getUsersFollowing(UID, function(following) {
                         follow_params = following.concat(followers);

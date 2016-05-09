@@ -19,6 +19,8 @@ module.exports = function(io, follow_params, list) {
         socket.on("start tweets", function() {
 
             var outputListOfPoints = list;
+            console.log("This is the received list:");
+            console.log(outputListOfPoints);
             socket.emit("initialList", outputListOfPoints);
 
             if(stream === null) {

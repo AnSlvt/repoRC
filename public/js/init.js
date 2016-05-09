@@ -40,8 +40,11 @@ function initMap() {
         socket.on("initialList", function(list) {
 
             // Add the coordinates from the list to the map
-            for (var i = 0; i < list.length; i++) {
-                var point = new google.maps.LatLng(list[i][0], list[i][1]);
+            console.log(list);
+            var coordinates = list.split("&");
+            for (var i = 0; i < coordinates.length; i++) {
+                var latlng = coordinates[i].split(",");
+                var point = new google.maps.LatLng(latlng[0], latlng[1]);
                 liveTweets.push(point);
             }
         });
