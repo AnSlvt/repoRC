@@ -37,6 +37,15 @@ function initMap() {
 
         var socket = io.connect('http://localhost:3000/');
 
+        socket.on("initialList", function(list) {
+
+            // Add the coordinates from the list to the map
+            for (var i = 0; i < list.length; i++) {
+                var point = new google.maps.LatLng(lista[i][0], lista[i][1]);
+                liveTweets.push(point);
+            }
+        });
+
         // This listens on the "twitter-steam" channel and data is
         // received everytime a new tweet is receieved.
         socket.on('twitter-stream', function(data) {

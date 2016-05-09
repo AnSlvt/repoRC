@@ -2,15 +2,12 @@ var request = require('request')
     , qs    = require('querystring')
     , auth  = require('./config/configTW')
     , getUsersFollower  = require('./helpers/getUsersFollower')
-    , getUsersFollowing = require('./helpers/getUsersFollowing');
-
+    , getUsersFollowing = require('./helpers/getUsersFollowing')
+    , getRecentTweets = require('./helpers/getRecentTweets');
 
 // User id and screen_name
 var UID
   , twitterScreenName;
-
-var followers
-  , following;
 
 module.exports = {
 
@@ -65,11 +62,13 @@ module.exports = {
             console.log("\n\nAccount info");
             console.log(UID, twitterScreenName);
 
-            var follow_params;
-            getUsersFollower(UID, function(ret) { followers = ret; });
-            getUsersFollowing(UID, function(ret) {
-                follow_params = ret.concat(followers);
-                res.redirect("/streaming/" + follow_params);
+            getRecentTweets(UID, 100, function(coordinates) {
+                getUsersFollower(UID, function(followers) {
+                    getUsersFollowing(UID, function(following) {
+                        follow_params = following.concat(followers);
+                        res.redirect("/streaming/" + follow_params + "/" + coordinates);
+                    });
+                });
             });
         });
     }
