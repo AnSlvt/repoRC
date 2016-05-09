@@ -6,7 +6,7 @@ function initMap() {
 
     //Setup Google Map
     var myOptions = {
-        zoom: 2,
+        zoom: 3,
         mapTypeId: google.maps.MapTypeId.SATELLITE
     }
 
@@ -21,7 +21,6 @@ function initMap() {
 
     // Set the center
     if (navigator.geolocation) {
-        alert("Please allow the geolocalization");
         navigator.geolocation.getCurrentPosition(function(position) {
             center = position;
             map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
@@ -33,11 +32,12 @@ function initMap() {
         map.setCenter(rome);
     }
 
-    console.log(liveTweets);
-
     if (io !== undefined) {
 
         var socket = io.connect('http://localhost:3000/');
+
+        // Image used for the marker
+        var image = "../small-dot-icon.png";
 
         socket.on("initialList", function(list) {
 
@@ -51,20 +51,8 @@ function initMap() {
             var coordinates = list.split("&");
             for (var i = 0; i < coordinates.length; i++) {
                 var latlng = coordinates[i].split(",");
-                var point = new google.maps.LatLng(latlng[0], latlng[1]);
+                var point = new google.maps.LatLng(latlng[1], latlng[0]);
                 liveTweets.push(point);
-
-                // Add a dot on the map for each
-                // Flash a dot onto the map quickly
-                var image = "../small-dot-icon.png";
-                var marker = new google.maps.Marker({
-                    position: point,
-                    map: map,
-                    icon: image
-                });
-                setTimeout(function() {
-                    marker.setMap(null);
-                }, 600);
             }
         });
 
@@ -75,18 +63,6 @@ function initMap() {
             // Add tweet to the heat map array.
             var tweetLocation = new google.maps.LatLng(data.lng, data.lat);
             liveTweets.push(tweetLocation);
-
-            // Flash a dot onto the map quickly
-            var image = "../small-dot-icon.png";
-            var marker = new google.maps.Marker({
-                position: tweetLocation,
-                map: map,
-                icon: image
-            });
-            setTimeout(function() {
-                marker.setMap(null);
-            }, 600);
-
         });
 
         // Listens for a success response from the server to
