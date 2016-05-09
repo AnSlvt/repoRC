@@ -41,7 +41,7 @@ function initMap() {
 
             // Add the coordinates from the list to the map
             for (var i = 0; i < list.length; i++) {
-                var point = new google.maps.LatLng(lista[i][0], lista[i][1]);
+                var point = new google.maps.LatLng(list[i][0], list[i][1]);
                 liveTweets.push(point);
             }
         });
