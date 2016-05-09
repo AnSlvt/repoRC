@@ -28,6 +28,7 @@ module.exports = function(io, follow_params, list) {
                 });
 
                 stream = twit.stream('statuses/filter', params);
+                //stream = twit.stream('statuses/filter', { locations: '-180,-90,180,90' });
 
                 stream.on('tweet', function(data) {
 
