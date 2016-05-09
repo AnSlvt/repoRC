@@ -1,13 +1,5 @@
-var twitter = require('twitter')
+var twitter = require('twit')
     , auth  = require('../config/configTW');
-
-var twit = new twitter({
-
-    consumer_key: auth.consumer_key
-    , consumer_secret: auth.consumer_secret
-    , access_token_key: auth.token
-    , access_token_secret: auth.token_secret
-});
 
 var stream = null;
 
@@ -28,41 +20,50 @@ module.exports = function(io, follow_params, list) {
                 var params = { follow: follow_params };
                 console.log(params);
 
-                twit.stream('statuses/filter', params, function(s) {
+                var twit = new twitter({
+                    consumer_key         : auth.consumer_key
+                    , consumer_secret    : auth.consumer_secret
+                    , access_token       : auth.token
+                    , access_token_secret: auth.token_secret
+                });
 
-                    stream = s;
-                    console.log("OK");
-                    console.log(stream);
-                    stream.on('data', function(data) {
+                stream = twit.stream('statuses/filter', params);
 
-                        // Does the JSON result have coordinates
-                        console.log(data);
-                        if (data.coordinates && data.coordinates !== null) {
+                stream.on('tweet', function(data) {
 
-                            //If so then build up some nice json and send out to web sockets
-                            var outputPoint = {
-                                "lat": data.coordinates.coordinates[0]
-                                , "lng": data.coordinates.coordinates[1]
-                            };
+                    console.log("Tweet from " + data.user.name + ": " + data.text);
 
-                            socket.broadcast.emit("twitter-stream", outputPoint);
+                    // Does the JSON result have coordinates
+                    if (data.coordinates && data.coordinates !== null) {
 
-                            //Send out to web sockets channel
-                            socket.emit('twitter-stream', outputPoint);
-                        }
-                    });
+                        console.log("================================================");
+                        console.log("Tweet from " + data.user.name + "has coordinates");
 
-                    stream.on('limit', function(limitMessage) {
-                        return console.log(limitMessage);
-                    });
+                        //If so then build up some nice json and send out to web sockets
+                        var outputPoint = {
+                            "lat": data.coordinates.coordinates[0]
+                            , "lng": data.coordinates.coordinates[1]
+                        };
+                        console.log("Coordinates are " + outputPoint);
+                        console.log("================================================");
 
-                    stream.on('warning', function(warning) {
-                        return console.log(warning);
-                    });
+                        socket.broadcast.emit("twitter-stream", outputPoint);
 
-                    stream.on('disconnect', function(disconnectMessage) {
-                        return console.log(disconnectMessage);
-                    });
+                        //Send out to web sockets channel
+                        socket.emit('twitter-stream', outputPoint);
+                    }
+                });
+
+                stream.on('limit', function(limitMessage) {
+                    return console.log(limitMessage);
+                });
+
+                stream.on('warning', function(warning) {
+                    return console.log(warning);
+                });
+
+                stream.on('disconnect', function(disconnectMessage) {
+                    return console.log(disconnectMessage);
                 });
             }
         });
