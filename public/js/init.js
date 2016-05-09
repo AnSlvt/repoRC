@@ -6,7 +6,7 @@ function initMap() {
 
     //Setup Google Map
     var myOptions = {
-        zoom: 13,
+        zoom: 2,
         mapTypeId: google.maps.MapTypeId.SATELLITE
     }
 
@@ -33,11 +33,18 @@ function initMap() {
         map.setCenter(rome);
     }
 
+    console.log(liveTweets);
+
     if (io !== undefined) {
 
         var socket = io.connect('http://localhost:3000/');
 
         socket.on("initialList", function(list) {
+
+            if (list === "NONE") {
+                console.log("No geolocalized tweet");
+                return;
+            }
 
             // Add the coordinates from the list to the map
             console.log(list);
@@ -46,6 +53,18 @@ function initMap() {
                 var latlng = coordinates[i].split(",");
                 var point = new google.maps.LatLng(latlng[0], latlng[1]);
                 liveTweets.push(point);
+
+                // Add a dot on the map for each
+                // Flash a dot onto the map quickly
+                var image = "../small-dot-icon.png";
+                var marker = new google.maps.Marker({
+                    position: point,
+                    map: map,
+                    icon: image
+                });
+                setTimeout(function() {
+                    marker.setMap(null);
+                }, 600);
             }
         });
 
@@ -53,12 +72,12 @@ function initMap() {
         // received everytime a new tweet is receieved.
         socket.on('twitter-stream', function(data) {
 
-            //Add tweet to the heat map array.
+            // Add tweet to the heat map array.
             var tweetLocation = new google.maps.LatLng(data.lng, data.lat);
             liveTweets.push(tweetLocation);
 
-            //Flash a dot onto the map quickly
-            var image = "small-dot-icon.png";
+            // Flash a dot onto the map quickly
+            var image = "../small-dot-icon.png";
             var marker = new google.maps.Marker({
                 position: tweetLocation,
                 map: map,
@@ -73,8 +92,8 @@ function initMap() {
         // Listens for a success response from the server to
         // say the connection was successful.
         socket.on("connected", function(r) {
-            //Now that we are connected to the server let's tell
-            //the server we are ready to start receiving tweets.
+            // Now that we are connected to the server let's tell
+            // the server we are ready to start receiving tweets.
             socket.emit("start tweets");
         });
     }

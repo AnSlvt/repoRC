@@ -14,14 +14,21 @@ module.exports = function(UID, count, callback) {
             return element.coordinates != null;
         });
 
-        var coordinates = "";
-        for (var i = 0; i < filtered.length; i++) {
-            coordinates += filtered[i].coordinates.coordinates[0] +
-            "," + filtered[i].coordinates.coordinates[1];
-            if (i < filtered.length - 1) coordinates += "&";
+        if (filtered.length === 0) {
+            callback("NONE");
         }
-        console.log("SERIALIZED:");
-        console.log(coordinates);
-        callback(coordinates);
+        else {
+
+            // At least one geolocalized tweet
+            var coordinates = "";
+            for (var i = 0; i < filtered.length; i++) {
+                coordinates += filtered[i].coordinates.coordinates[0] +
+                "," + filtered[i].coordinates.coordinates[1];
+                if (i < filtered.length - 1) coordinates += "&";
+            }
+            console.log("SERIALIZED:");
+            console.log(coordinates);
+            callback(coordinates);
+        }
     });
 }
