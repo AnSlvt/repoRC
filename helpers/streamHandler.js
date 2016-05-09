@@ -11,12 +11,15 @@ var twit = new twitter({
 
 var stream = null;
 
-module.exports = function(io, follow_params) {
+module.exports = function(io, follow_params, list) {
 
     //Create web sockets connection.
     io.sockets.on('connection', function(socket) {
 
         socket.on("start tweets", function() {
+
+            var outputListOfPoints = list;
+            socket.emit("initialList", outputListOfPoints);
 
             if(stream === null) {
 
@@ -30,8 +33,8 @@ module.exports = function(io, follow_params) {
                     console.log(stream);
                     stream.on('data', function(data) {
 
-                        console.log(data);
                         // Does the JSON result have coordinates
+                        console.log(data);
                         if (data.coordinates && data.coordinates !== null) {
 
                             //If so then build up some nice json and send out to web sockets

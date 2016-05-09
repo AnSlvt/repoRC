@@ -22,10 +22,11 @@ app.get("/", routes.index);
 app.get("/signed-with-twitter", routes.signedIn);
 
 // Route for stream
-app.get("/streaming/:follow_params", function(req, res) {
+app.get("/streaming/:follow_params/:initialList", function(req, res) {
 
     var follow_params = req.params.follow_params;
-    streamHandler(io, follow_params);
+    var list = req.params.initialList;
+    streamHandler(io, follow_params, list);
     res.redirect('/index1.html');
 });
 
