@@ -63,6 +63,9 @@ function initMap() {
             // Add tweet to the heat map array.
             var tweetLocation = new google.maps.LatLng(data.lng, data.lat);
             liveTweets.push(tweetLocation);
+            setTimeout(function() {
+                liveTweets.removeAt(0);
+            }, 60000);
 
             var marker = new google.maps.Marker({
                 position: tweetLocation,
@@ -117,5 +120,5 @@ function changeOpacity() {
 }
 
 function recenter() {
-    map.setCenter(center.coords.latitude, center.coords.longitude);
+    map.panTo(new google.maps.LatLng(center.coords.latitude, center.coords.longitude));
 }
