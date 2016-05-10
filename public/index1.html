@@ -1,0 +1,44 @@
+<html>
+<head>
+    <!-- Google API key=AIzaSyCbuqJ7ZZ4tKujhvm0ZpxKzS93XumF_TFo -->
+
+    <!-- Node stream API -->
+    <script src="../socket.io/socket.io.js"></script>
+
+    <!-- Google maps API -->
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbuqJ7ZZ4tKujhvm0ZpxKzS93XumF_TFo&libraries=visualization&callback=initMap">
+    </script>
+
+    <!-- My scripts and style -->
+    <link rel="stylesheet" type="text/css" href="./css/map.css" />
+    <link rel="stylesheet" type="text/css" href="./css/navbar.css" />
+    <script type="text/javascript" src="./js/init.js"></script>
+
+</head>
+<body>
+    <nav>
+        <ul>
+            <li>
+                <a href="/">Sign In</a>
+            </li>
+            <li>
+                <img src="TwitterLogo_white.png" />
+            </li>
+            <div>
+                <li>HEAT MAP</li>
+            </div>
+        </ul>
+    </nav>
+    <main>
+        <div id="floating-panel">
+            <button onclick="toggleHeatmap()">Toggle Heatmap</button>
+            <button onclick="changeGradient()">Change gradient</button>
+            <button onclick="changeRadius()">Change radius</button>
+            <button onclick="changeOpacity()">Change opacity</button>
+            <button onclick="recenter()">Center on me</button>
+        </div>
+        <div id="map_canvas"></div>
+    </main>
+</body>
+</html>
