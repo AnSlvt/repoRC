@@ -1,5 +1,6 @@
-var twitter = require('twit')
-    , auth  = require('../config/configTW');
+var twitter    = require('twit')
+    , auth     = require('../config/configTW')
+    , userInfo = require('../config/userInfo');
 
 var stream = null;
 
@@ -14,6 +15,7 @@ module.exports = function(io, follow_params, list) {
             console.log("This is the received list:");
             console.log(outputListOfPoints);
             socket.emit("initialList", outputListOfPoints);
+            socket.emit("username", userInfo.screen_name);
 
             if(stream === null) {
 

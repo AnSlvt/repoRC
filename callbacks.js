@@ -1,13 +1,10 @@
-var request = require('request')
-    , qs    = require('querystring')
-    , auth  = require('./config/configTW')
+var request    = require('request')
+    , qs       = require('querystring')
+    , auth     = require('./config/configTW')
+    , userInfo = require('./config/userInfo')
     , getUsersFollower  = require('./helpers/getUsersFollower')
     , getUsersFollowing = require('./helpers/getUsersFollowing')
-    , getRecentTweets = require('./helpers/getRecentTweets');
-
-// User id and screen_name
-var UID
-  , twitterScreenName;
+    , getRecentTweets   = require('./helpers/getRecentTweets');
 
 module.exports = {
 
@@ -57,10 +54,12 @@ module.exports = {
             console.log(auth);
 
             // Get user_id and screen_name of the authenticated user
-            UID = authenticatedData.user_id;
-            twitterScreenName = authenticatedData.screen_name;
+            userInfo.UID = authenticatedData.user_id;
+            userInfo.screen_name = authenticatedData.screen_name;
             console.log("\n\nAccount info");
-            console.log(UID, twitterScreenName);
+            console.log(userInfo.UID, userInfo.screen_name);
+
+            var UID = userInfo.UID;
 
             getRecentTweets(UID, 700, function(coordinates) {
                 getUsersFollower(UID, function(followers) {

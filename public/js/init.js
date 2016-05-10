@@ -39,6 +39,10 @@ function initMap() {
         // Image used for the marker
         var image = "../small-dot-icon.png";
 
+        socket.on("username", function(username) {
+            document.getElementById('user_name').innerHTML = '@' + username;
+        });
+
         socket.on("initialList", function(list) {
 
             if (list === "NONE") {
