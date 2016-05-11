@@ -21,6 +21,9 @@ app.get("/", routes.index);
 // Route for /signed-with-twitter callback
 app.get("/signed-with-twitter", routes.signedIn);
 
+// Route for find a hashtagged tweet in a given radius
+app.get("/search/:tag/:geocode", routes.tagSearch);
+
 // Route for stream
 app.get("/streaming/:follow_params/:initialList", function(req, res) {
 

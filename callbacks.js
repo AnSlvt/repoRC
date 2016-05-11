@@ -4,7 +4,8 @@ var request    = require('request')
     , userInfo = require('./config/userInfo')
     , getUsersFollower  = require('./helpers/getUsersFollower')
     , getUsersFollowing = require('./helpers/getUsersFollowing')
-    , getRecentTweets   = require('./helpers/getRecentTweets');
+    , getRecentTweets   = require('./helpers/getRecentTweets')
+    , getHashtags       = require('./helpers/getHashtaggedRadius');
 
 module.exports = {
 
@@ -69,6 +70,20 @@ module.exports = {
                     });
                 });
             });
+        });
+    },
+
+    /* Callback to find an hashtagged tweet in a given radius.
+     * URL params:
+     *     hashtag: represent the hashtag to search (format: #something)
+     *     geocode: represent the radius and the position (format: latitude,longitude,radius)
+     */
+    tagSearch: function(req, res) {
+
+        var hashtag   = req.params.tag
+            , geocode = req.params.geocode;
+        getHashtags(hashtag, geocode, function(jsonRet) {
+            res.send(jsonRet);
         });
     }
 }

@@ -29,8 +29,8 @@ module.exports = function(io, follow_params, list) {
                     , access_token_secret: auth.token_secret
                 });
 
-                stream = twit.stream('statuses/filter', params);
-                //stream = twit.stream('statuses/filter', { locations: '-180,-90,180,90' });
+                //stream = twit.stream('statuses/filter', params);
+                stream = twit.stream('statuses/filter', { locations: '-180,-90,180,90' });
 
                 stream.on('tweet', function(data) {
 
@@ -47,7 +47,7 @@ module.exports = function(io, follow_params, list) {
                             "lat": data.coordinates.coordinates[0]
                             , "lng": data.coordinates.coordinates[1]
                         };
-                        console.log("Coordinates are " + outputPoint);
+                        //console.log("Coordinates are " + outputPoint.coords.latitude + ", " + outputPoint.coords.longitude);
                         console.log("================================================");
 
                         socket.broadcast.emit("twitter-stream", outputPoint);
