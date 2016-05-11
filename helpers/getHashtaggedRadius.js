@@ -34,7 +34,7 @@ module.exports = function(tag, geocode, callback) {
 
         var ret = [];
 
-        var jsonb = JSON.parse(body);
+        var jsonb = JSON.parse(body)
             , statuses = jsonb.statuses;
             , geoParams = geocode.split(",")
             , lat = geoParams[0]
