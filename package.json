@@ -16,11 +16,12 @@
     "url": "https://github.com/AnSlvt/repoRC/issues"
   },
   "dependencies": {
+    "amqplib": "^0.4.1",
     "express": "~4.13.4",
-    "request": "~2.72.0",
-    "querystring": "~0.2.0",
-    "socket.io": "~1.4.6",
     "hamljs": "~0.6.2",
+    "querystring": "~0.2.0",
+    "request": "~2.72.0",
+    "socket.io": "~1.4.6",
     "twit": "~2.2.4"
   }
 }

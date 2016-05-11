@@ -1,5 +1,6 @@
 var twitter = require('twit')
-    , auth  = require('../config/configTW');
+    , auth  = require('../config/configTW')
+    , NotificationHandler = require("./NotificationHandler");
 
 var stream = null;
 
@@ -34,8 +35,17 @@ module.exports = function(io, follow_params, list) {
 
                     console.log("Tweet from " + data.user.name + ": " + data.text);
 
+                    var tweet;
+                    NotificationHandler.consume(tweet);
+
                     // Does the JSON result have coordinates
                     if (data.coordinates && data.coordinates !== null) {
+                        NotificationHandler.publish(data);
+
+                        //notification
+                        //if (data.coordinates[0] < 160) {
+                            socket.emit("notification", tweet);
+                        //}
 
                         console.log("================================================");
                         console.log("Tweet from " + data.user.name + "has coordinates");

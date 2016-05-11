@@ -39,6 +39,10 @@ function initMap() {
         // Image used for the marker
         var image = "../small-dot-icon.png";
 
+        /*var tweet;
+        NotificationHandler.consume(tweet);
+        console.log(tweet);
+*/
         socket.on("initialList", function(list) {
 
             if (list === "NONE") {
@@ -56,6 +60,9 @@ function initMap() {
             }
         });
 
+        socket.on("notification",function(data){
+           console.log(data)
+        });
         // This listens on the "twitter-steam" channel and data is
         // received everytime a new tweet is receieved.
         socket.on('twitter-stream', function(data) {
