@@ -1,47 +1,58 @@
-var amqp = require('amqplib/callback_api')
-    , auth = require('../config/configTW');
-
-var connection;
+var amqp = require('amqplib/callback_api');
 
 //tweet entro un certo raggio -> notifica
 
 module.exports = {
-    consume: function consume() {
+    consume: function consume(callback) {
     // Consumer
         amqp.connect('amqp://localhost', function (err, conn) {
-            if (err != null) console.error(err);
+            if (err != null) {
+                console.warn(err.stack);
+                console.error(err);
+                process.exit;
+            }
             conn.createChannel(channel);
             function channel(err, ch) {
-                console.log("sono in channel")
-                if (err != null) console.error(err);
+                if (err != null) {
+                    console.warn(err.stack);
+                    console.error(err);
+                    process.exit;
+                }
 
-                ch.assertQueue(q);
-                ch.consume(q, function(msg){
-                    tweet = msg.content.toString();
+                ch.assertQueue("twitter-queue");
+                ch.consume('twitter-queue', function(msg){
+                    callback(msg.content.toString()); // i pass it as a callback parameter
                     ch.ack(msg);
-                    return tweet;
                 });
             };
-            conn.close();
         });
     }
 
     ,publish: function publish(tweet) {
             amqp.connect('amqp://localhost', function (err, conn) {
-                if (err != null) console.error(err);
+                if (err != null) {
+                    console.warn(err.stack);
+                    console.error(err);
+                    process.exit;
+                }
                 conn.createChannel(channel);
 
                 function channel(err, ch) {
-                    if (err != null) console.error(err);
+
+                    if (err != null) {
+                        console.warn(err.stack);
+                        console.error(err);
+                        process.exit;
+                    }
 
                     var msg = tweet.user.name + ": " + tweet.text;
-                    ch.assertQueue(q, {durable: true});
-                    ch.sendToQueue(q, new Buffer(msg), {persistent: true});
+
+                    ch.assertQueue('twitter-queue', {durable: true});
+                    ch.sendToQueue('twitter-queue', new Buffer(msg), {persistent: true});
                 };
-                conn.close();
             });
         }
-    , q : 'twitter-queue'
+    ,
 
 
 }
