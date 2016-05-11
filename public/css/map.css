@@ -4,6 +4,8 @@ main {
     padding: 0;
 }
 
+body { margin: 0; }
+
 #map_canvas {
     height: 95%;
 }
