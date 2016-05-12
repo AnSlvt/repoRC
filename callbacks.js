@@ -84,8 +84,8 @@ module.exports = {
             , geocode = req.params.geocode;
         getHashtags(hashtag, geocode, function(jsonRet) {
             res.send(jsonRet);
-        }
-    }
+        });
+    },
 
     recentHashtags: function(req, res) {
 
