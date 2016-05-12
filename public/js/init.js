@@ -62,9 +62,11 @@ function initMap() {
 
 
 
-        socket.on("notification",function(data){
+        socket.on("notification", function(data){
             //console.log(data);
-            $("#map_canvas").alertify.success(data, 2, function (){}).show();
+            noty({
+                text: data
+            })
         });
         // This listens on the "twitter-steam" channel and data is
         // received everytime a new tweet is receieved.
