@@ -65,7 +65,10 @@ function initMap() {
         socket.on("notification", function(data){
             //console.log(data);
             noty({
-                text: data
+                text: data,
+                layout: "bottomLeft",
+                maxVisible: 3,
+                timeout: 3000
             })
         });
         // This listens on the "twitter-steam" channel and data is
