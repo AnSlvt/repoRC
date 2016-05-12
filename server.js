@@ -21,6 +21,12 @@ app.get("/", routes.index);
 // Route for /signed-with-twitter callback
 app.get("/signed-with-twitter", routes.signedIn);
 
+/* ========== STATISTICS ============ */
+
+app.get("/hashcount/:hashtag/:hours/:geocode", routes.recentHashtags);
+
+app.get("/wordfrequency/:word/:hours/:geocode", routes.wordFrequency);
+
 // Route for stream
 app.get("/streaming/:follow_params/:initialList", function(req, res) {
 
