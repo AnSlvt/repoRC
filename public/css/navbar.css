@@ -16,7 +16,7 @@ nav ul li {
 nav ul li img {
 
     width: 30px;
-    padding: 10px 0px 0px 0px;
+    padding: 6px 0px 0px 0px;
 }
 
 /* Style for the title */
@@ -24,7 +24,7 @@ nav ul div li {
 
     float: left;
     text-align: center;
-    padding: 14px 16px;
+    padding: 10px 16px 10px 15px;
     text-decoration: none;
     color: white;
     text-shadow: 2px 2px #292f33;
@@ -32,7 +32,19 @@ nav ul div li {
     font-family: sans-serif;
 }
 
+#user_name {
+
+    color: white;
+    font-size: 18px;
+    font-family: sans-serif;
+    text-align: center;
+    /*margin-top: 13px;
+    margin-right: 15px;*/
+    padding: 10px 15px 10px 2px;
+}
+
 /* Style for the sign in button */
+/*
 nav ul li a {
 
     display: block;
@@ -47,3 +59,4 @@ nav ul li a:hover {
 
     background-color: #009;
 }
+*/
