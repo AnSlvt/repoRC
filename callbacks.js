@@ -84,6 +84,78 @@ module.exports = {
             , geocode = req.params.geocode;
         getHashtags(hashtag, geocode, function(jsonRet) {
             res.send(jsonRet);
+        }
+    }
+
+    recentHashtags: function(req, res) {
+
+        // The Twitter search API URL
+        var url = "https://api.twitter.com/1.1/search/tweets.json";
+
+        // Make sure the is the # symbol at the beginning of the hashtag
+        var hashtag = req.params.hashtag;
+        if (hashtag[0] !== "#") hashtag = "%23" + hashtag;
+        else hashtag.replace("#", "%23");
+
+        // Prepare the query and call the Twitter API
+        var query = url + "?q=" + hashtag + "&geocode=" + req.params.geocode;
+        console.log("Query URL:");
+        console.log(query);
+        request.get({ url : query , oauth : auth }, function(e, r, body) {
+            var total = 0;
+            var jsonb = JSON.parse(body);
+            console.log("jsonb:");
+            console.log(jsonb);
+            for (var i = 0; i < jsonb.statuses.length; i++) {
+
+                // Parse the date of the current tweet
+                var date = (new Date(Date.parse(jsonb.statuses[i].created_at))).getTime();
+                var now = (new Date()).getTime();
+                var difference = now - date;
+
+                // Increment the counter if the tweet is recent enough
+                var timespan = parseInt(req.params.hours) * 60 * 60 * 1000;
+                if (timespan - difference) total += 1;
+            }
+            res.send("{ \"tweets_count\": " + total + " }");
+        });
+    },
+
+    wordFrequency: function(req, res) {
+
+        // The Twitter search API URL
+        var url = "https://api.twitter.com/1.1/search/tweets.json";
+
+        // Prepare the query
+        var query = url + "?q=" + req.params.word + "&geocode=" + req.params.geocode;
+        console.log("Query URL:");
+        console.log(query);
+        request.get({ url : query , oauth : auth }, function(e, r, body) {
+            var count = 0;
+            var tweets = "";
+            var jsonb = JSON.parse(body);
+            console.log("jsonb:");
+            console.log(jsonb);
+            for (var i = 0; i < jsonb.statuses.length; i++) {
+
+                // Parse the date of the current tweet
+                var date = (new Date(Date.parse(jsonb.statuses[i].created_at))).getTime();
+                var now = (new Date()).getTime();
+                var difference = now - date;
+
+                // Increment the counter if the tweet is recent enough
+                var timespan = parseInt(req.params.hours) * 60 * 60 * 1000;
+                if (timespan - difference) {
+
+                    // The filtered tweet should be added to the output
+                    count += 1;
+                    if (tweets !== "") tweets += ",";
+                    tweets += "{ \"text\": \"" + jsonb.statuses[i].text + "\",";
+                    tweets += "\"author_name\": \"" + jsonb.statuses[i].user.name + "\",";
+                    tweets += "\"posted_at\": \"" + jsonb.statuses[i].created_at + "\"}";
+                }
+            }
+            res.send("{ \"tweets_count\": " + count + ",\"tweets\": [" + tweets + "]}");
         });
     }
 }

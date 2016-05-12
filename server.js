@@ -24,6 +24,12 @@ app.get("/signed-with-twitter", routes.signedIn);
 // Route for find a hashtagged tweet in a given radius
 app.get("/search/:tag/:geocode", routes.tagSearch);
 
+/* ========== STATISTICS ============ */
+
+app.get("/hashcount/:hashtag/:hours/:geocode", routes.recentHashtags);
+
+app.get("/wordfrequency/:word/:hours/:geocode", routes.wordFrequency);
+
 // Route for stream
 app.get("/streaming/:follow_params/:initialList", function(req, res) {
 
