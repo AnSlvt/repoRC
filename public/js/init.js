@@ -4,7 +4,7 @@ function initMap() {
 
     var rome = new google.maps.LatLng(41.8919300, 12.5113300);
 
-    //Setup Google Map
+    // Setup Google Map
     var myOptions = {
         zoom: 3,
         mapTypeId: google.maps.MapTypeId.SATELLITE
@@ -12,7 +12,7 @@ function initMap() {
 
     map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
-    //Setup heat map and link to Twitter array we will append data to -- Fa errore PD
+    // Setup heat map and link to Twitter array we will append data to -- Fa errore PD
     var liveTweets = new google.maps.MVCArray();
     heatmap = new google.maps.visualization.HeatmapLayer({
         data: liveTweets,
@@ -43,6 +43,11 @@ function initMap() {
             document.getElementById('user_name').innerHTML = '@' + username;
         });
 
+        /*var tweet;
+        NotificationHandler.consume(tweet);
+        console.log(tweet);
+        */
+
         socket.on("initialList", function(list) {
 
             if (list === "NONE") {
@@ -58,6 +63,16 @@ function initMap() {
                 var point = new google.maps.LatLng(latlng[1], latlng[0]);
                 liveTweets.push(point);
             }
+        });
+
+        socket.on("notification", function(data){
+            //console.log(data);
+            noty({
+                text: data,
+                layout: "bottomLeft",
+                maxVisible: 3,
+                timeout: 3000
+            })
         });
 
         // This listens on the "twitter-steam" channel and data is

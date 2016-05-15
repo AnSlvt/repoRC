@@ -16,7 +16,11 @@ nav ul li {
 nav ul li img {
 
     width: 30px;
+<<<<<<< HEAD
     padding: 6px 0px 0px 0px;
+=======
+    padding: 10px 0px 0px 0px;
+>>>>>>> ac024c9b09fd4436d20e2dbf1ca09bfc60563691
 }
 
 /* Style for the title */
@@ -24,7 +28,11 @@ nav ul div li {
 
     float: left;
     text-align: center;
+<<<<<<< HEAD
     padding: 10px 16px 10px 15px;
+=======
+    padding: 14px 16px;
+>>>>>>> ac024c9b09fd4436d20e2dbf1ca09bfc60563691
     text-decoration: none;
     color: white;
     text-shadow: 2px 2px #292f33;
@@ -32,6 +40,7 @@ nav ul div li {
     font-family: sans-serif;
 }
 
+<<<<<<< HEAD
 #user_name {
 
     color: white;
@@ -45,6 +54,9 @@ nav ul div li {
 
 /* Style for the sign in button */
 /*
+=======
+/* Style for the sign in button */
+>>>>>>> ac024c9b09fd4436d20e2dbf1ca09bfc60563691
 nav ul li a {
 
     display: block;
@@ -59,4 +71,7 @@ nav ul li a:hover {
 
     background-color: #009;
 }
+<<<<<<< HEAD
 */
+=======
+>>>>>>> ac024c9b09fd4436d20e2dbf1ca09bfc60563691
