@@ -1,21 +1,10 @@
-<<<<<<< HEAD
-var twitter    = require('twit')
-    , auth     = require('../config/configTW')
-    , userInfo = require('../config/userInfo');
-
-var stream = null;
-
-=======
 var twitter = require('twit')
     , auth  = require('../config/configTW')
     , NotificationHandler = require("./NotificationHandler")
     , pusher = require('pusher');
 
-
 var stream = null;
 
-
->>>>>>> ac024c9b09fd4436d20e2dbf1ca09bfc60563691
 module.exports = function(io, follow_params, list) {
 
     //Create web sockets connection.
@@ -27,10 +16,7 @@ module.exports = function(io, follow_params, list) {
             console.log("This is the received list:");
             console.log(outputListOfPoints);
             socket.emit("initialList", outputListOfPoints);
-<<<<<<< HEAD
             socket.emit("username", userInfo.screen_name);
-=======
->>>>>>> ac024c9b09fd4436d20e2dbf1ca09bfc60563691
 
             if(stream === null) {
 
@@ -51,13 +37,6 @@ module.exports = function(io, follow_params, list) {
 
                     console.log("Tweet from " + data.user.name + ": " + data.text);
 
-<<<<<<< HEAD
-                    // Does the JSON result have coordinates
-                    if (data.coordinates && data.coordinates !== null) {
-
-=======
-
-
                     // Does the JSON result have coordinates
                     if (data.coordinates && data.coordinates !== null) {
 
@@ -66,9 +45,6 @@ module.exports = function(io, follow_params, list) {
                             socket.emit("notification", tweet);
                         });
 
-
-
->>>>>>> ac024c9b09fd4436d20e2dbf1ca09bfc60563691
                         console.log("================================================");
                         console.log("Tweet from " + data.user.name + "has coordinates");
 
@@ -77,11 +53,6 @@ module.exports = function(io, follow_params, list) {
                             "lat": data.coordinates.coordinates[0]
                             , "lng": data.coordinates.coordinates[1]
                         };
-<<<<<<< HEAD
-                        //console.log("Coordinates are " + outputPoint.coords.latitude + ", " + outputPoint.coords.longitude);
-=======
-                        console.log("Coordinates are " + outputPoint);
->>>>>>> ac024c9b09fd4436d20e2dbf1ca09bfc60563691
                         console.log("================================================");
 
                         socket.broadcast.emit("twitter-stream", outputPoint);

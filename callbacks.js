@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 var request    = require('request')
     , qs       = require('querystring')
     , auth     = require('./config/configTW')
@@ -7,18 +6,6 @@ var request    = require('request')
     , getUsersFollowing = require('./helpers/getUsersFollowing')
     , getRecentTweets   = require('./helpers/getRecentTweets')
     , getHashtags       = require('./helpers/getHashtaggedRadius');
-=======
-var request = require('request')
-    , qs    = require('querystring')
-    , auth  = require('./config/configTW')
-    , getUsersFollower  = require('./helpers/getUsersFollower')
-    , getUsersFollowing = require('./helpers/getUsersFollowing')
-    , getRecentTweets = require('./helpers/getRecentTweets');
-
-// User id and screen_name
-var UID
-  , twitterScreenName;
->>>>>>> ac024c9b09fd4436d20e2dbf1ca09bfc60563691
 
 module.exports = {
 
@@ -68,19 +55,12 @@ module.exports = {
             console.log(auth);
 
             // Get user_id and screen_name of the authenticated user
-<<<<<<< HEAD
             userInfo.UID = authenticatedData.user_id;
             userInfo.screen_name = authenticatedData.screen_name;
             console.log("\n\nAccount info");
             console.log(userInfo.UID, userInfo.screen_name);
 
             var UID = userInfo.UID;
-=======
-            UID = authenticatedData.user_id;
-            twitterScreenName = authenticatedData.screen_name;
-            console.log("\n\nAccount info");
-            console.log(UID, twitterScreenName);
->>>>>>> ac024c9b09fd4436d20e2dbf1ca09bfc60563691
 
             getRecentTweets(UID, 700, function(coordinates) {
                 getUsersFollower(UID, function(followers) {
@@ -91,7 +71,6 @@ module.exports = {
                 });
             });
         });
-<<<<<<< HEAD
     },
 
     /* Callback to find an hashtagged tweet in a given radius.
@@ -178,7 +157,5 @@ module.exports = {
             }
             res.send("{ \"tweets_count\": " + count + ",\"tweets\": [" + tweets + "]}");
         });
-=======
->>>>>>> ac024c9b09fd4436d20e2dbf1ca09bfc60563691
     }
 }
