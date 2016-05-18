@@ -1,5 +1,6 @@
 var twitter = require('twit')
     , auth  = require('../config/configTW')
+    , userInfo = require('../config/userInfo')
     , NotificationHandler = require("./NotificationHandler")
     , pusher = require('pusher');
 
