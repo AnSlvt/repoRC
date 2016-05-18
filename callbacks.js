@@ -143,5 +143,92 @@ module.exports = {
             }
             res.send("{ \"tweets_count\": " + count + ",\"tweets\": [" + tweets + "]}");
         });
+    },
+
+    trendsandplaces: function(req, res) {
+
+        // Get the Twitter places URL
+        var twitterPlacesUrl = "https://api.twitter.com/1.1/trends/closest.json?";
+        var placesQuery = twitterPlacesUrl + "lat=" + req.params.lat + "&long=" + req.params.long;
+
+        // Query the places
+        request.get({ url : placesQuery , oauth : auth }, function(e, r, body) {
+            var placeBody = JSON.parse(body)[0];
+            var woeid = placeBody.woeid;
+
+            // Get the local trends
+            var trendsUrl = "https://api.twitter.com/1.1/trends/place.json?id=";
+            var trendsQuery = trendsUrl + woeid;
+            request.get({ url : trendsQuery , oauth : auth }, function(e2, r2, body2) {
+                var trendsBody = JSON.parse(body2)[0];
+
+                // Add the trends to the output JSON
+                var output = "{ \"trends\": [";
+                var trends = "";
+                for (var i = 0; i < trendsBody.trends.length; i++) {
+                    if (trendsBody.trends[i].name[0] !== "#") continue;
+                    if (trends.length > 0) trends += ",";
+                    trends += "{ \"name\": \"" + trendsBody.trends[i].name + "\"";
+                    trends += ", \"tweets_count\": " + trendsBody.trends[i].tweet_volume + "}";
+                }
+                output += trends + "],";
+
+                // Google Maps URLs and API keys
+                var mapsUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
+                var googleAPIKey = "AIzaSyDUfXDMc-ghv4glhDlaRvM6C_R_VBo81Y8"
+
+                // Call the Google Maps API
+                var mapsQuery = mapsUrl + "key=" + googleAPIKey + "&location="
+                    + req.params.lat + "," + req.params.long + "&radius=" + req.params.radius;
+                request.get({ url : mapsQuery }, function(e3, r3, body3) {
+                    var jsonb = JSON.parse(body3);
+                    console.log("Places:");
+                    console.log(jsonb);
+
+                    // Check if there's at least one valid result
+                    var results = jsonb.results;
+                    if (results === null || results.length < 1) {
+                        output += "\"places\": []}";
+                        res.send(output);
+                    }
+
+                    // Extract the nearby places
+                    var places = "";
+                    for (var i = 0; i < results.length; i++) {
+                        if (places.lenth > 0) places += ",";
+                        places += "{ \"name\": \"" + results[i].name + "\",";
+                        places += "\"vicinity\": \"" + results[i].vicinity + "\"}";
+                    }
+
+                    // Return the result
+                    output += "\"places\": [" + places + "]}";
+                    res.send(output);
+                });
+            });
+        });
+
+        /* URLs and API keys
+        var mapsUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
+        var googleAPIKey = "AIzaSyDUfXDMc-ghv4glhDlaRvM6C_R_VBo81Y8"
+
+        // Call the Google Maps API
+        var mapsQuery = mapsUrl + "key=" + googleAPIKey + "&location="
+            + req.params.geocode + "&radius=" + req.params.radius;
+        request.get({ url : mapsQuery }, function(e, r, body) {
+            var jsonb = JSON.parse(body);
+            console.log("Places:");
+            console.log(jsonb);
+
+            // Check if there's at least one valid result
+            var results = jsonb.results;
+            if (results === null || results.length < 1) {
+                res.send("{ \"trends\": [], \"error\": \"No nearby places found\"}");
+            }
+
+            // Get the first place and call Yahoo
+            var vicinity = results[0].vicinity;
+            var yahoo = "http://where.yahooapis.com/v1/places.q";
+
+        }); */
     }
 }
