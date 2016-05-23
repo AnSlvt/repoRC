@@ -2,8 +2,6 @@ main {
     margin: auto;
 }
 
-
-
 body {
     margin: auto;
 }
@@ -25,8 +23,9 @@ body {
 
 
 #map_canvas {
-    margin-top: 3.5%;
-    height: 94%;
+    /*margin-top: 3.5%; */
+    height: 100%;
+    /*margin: auto;*/
 }
 
 #floating-panel {

@@ -17,12 +17,16 @@
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-header">
-        <a class="navbar-brand" href="#">Twheat Map</a>
+        <a id="navbar-title" class="navbar-brand" href="#">Twheat Map</a>
     </div>
 
     <div class="collapse navbar-collapse">
-        <div id="signer"><%- link_to("Sign In with Twitter", twitterLink) %></div>
-        <img src="TwitterLogo_white.png"/>
+        <div id="signer">
+            <a href="<%= twitterLink %>" class="navbar-brand">
+                <img src="TwitterLogo_white.png" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sign In with Twitter
+            </a>
+        </div>
+
     </div>
 </nav>
 <div class="cover">

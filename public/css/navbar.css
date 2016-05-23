@@ -1,23 +1,50 @@
-.navbar-collapse img {
+#top-nav img {
     float: right;
-    width: 30px;
-    padding-top: 12px;
-    padding-right: 5px;
+    width: 40px;
+    padding: 13px 5px;
+}
 
+.navbar-brand img {
+    float: left;
+    width: 25px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: auto;
+    right: 150;
+    margin: auto;
 }
 
 #user_name {
     float: right;
     color: white;
+    font-size: 18px;
     padding-top: 15px;
     padding-right: 5px;
+}
+
+#navbar-title {
+    color: white;
+}
+
+#map-options {
+    color: white;
 }
 
 #signer {
     float: right;
     color: white;
-    padding-top: 15px;
-    padding-right: 5px;
+    display: block;
+}
+
+#signer a {
+    text-decoration: none;
+    color: white;
+    font-size: 15px;
+}
+
+#signer a:hover {
+    background-color: #404040;
 }
 
 .navbar-nav button {
