@@ -2,15 +2,18 @@
 var streamHandler = require('./helpers/streamHandler')
     , express     = require('express')
     , http        = require('http')
+    , helpers     = require('express-helpers')
     , routes      = require('./callbacks');
 
 
 // Create an express instance and set a port variable
 var app = express();
+helpers(app);
 var port = process.env.PORT || 3000;
 
 // Set haml as the templating engine
-app.engine('.haml', require('hamljs').renderFile);
+//app.engine('.haml', require('hamljs').renderFile);
+app.set('view engine', 'ejs');
 
 // Set /public as our static content dir
 app.use("/", express.static(__dirname + "/public"));

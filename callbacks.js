@@ -26,9 +26,9 @@ module.exports = {
             // and allowing the user to click the link
             var uri = 'https://api.twitter.com/oauth/authenticate' + '?'
                     + qs.stringify({ oauth_token: oauthToken });
+            res.render("index", { twitterLink: uri });
 
             // replace this with a sendFile
-            res.send('<a href = "' + uri + '"> Sign in with twitter </a>');
         });
     },
 

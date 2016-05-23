@@ -1,6 +1,22 @@
 <html>
 <head>
     <!-- Google API key=AIzaSyCbuqJ7ZZ4tKujhvm0ZpxKzS93XumF_TFo -->
+    <title>Tweet Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="../../assets/js/html5shiv.js"></script>
+    <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript">
+        function notYet() {
+            alert("Not available yet.\n");
+        }
+    </script>
+
 
     <!-- Node stream API -->
     <script src="../socket.io/socket.io.js"></script>
@@ -17,28 +33,34 @@
 
 </head>
 <body>
-    <nav>
-        <ul>
-            <li>
-                <div id="user_name"></div>
-            </li>
-            <li>
-                <img src="TwitterLogo_white.png" />
-            </li>
-            <div>
-                <li>HEAT MAP</li>
-            </div>
-        </ul>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Twheat Map</a>
+        </div>
+
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Map Options <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a onclick="toggleHeatmap()">Toggle Heatmap</a></li>
+                        <li><a onclick="changeGradient()">Change gradient</a></li>
+                        <li><a onclick="changeRadius()">Change radius</a></li>
+                        <li><a onclick="changeOpacity()">Change opacity</a></li>
+                        <li><a onclick="recenter()">Center on me</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div id="user_name">@LoremIpsum</div> /*rimuovi lorem ipsum dopo aver fatto lo screenshot!!!*/
+            <img src="TwitterLogo_white.png"/>
+        </div>
     </nav>
     <main>
-        <div id="floating-panel">
-            <button onclick="toggleHeatmap()">Toggle Heatmap</button>
-            <button onclick="changeGradient()">Change gradient</button>
-            <button onclick="changeRadius()">Change radius</button>
-            <button onclick="changeOpacity()">Change opacity</button>
-            <button onclick="recenter()">Center on me</button>
-        </div>
         <div id="map_canvas"></div>
     </main>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="//code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
 </body>
 </html>

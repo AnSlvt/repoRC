@@ -1,4 +1,4 @@
-nav ul {
+/*nav ul {
 
     list-style-type: none;
     margin: 0;
@@ -7,7 +7,6 @@ nav ul {
     background-color: #33c;
 }
 
-/* Position of the sign in button */
 nav ul li {
 
     float: right;
@@ -19,7 +18,6 @@ nav ul li img {
     padding: 6px 0px 0px 0px;
 }
 
-/* Style for the title */
 nav ul div li {
 
     float: left;
@@ -30,17 +28,33 @@ nav ul div li {
     text-shadow: 2px 2px #292f33;
     font-size: 18px;
     font-family: sans-serif;
+}*/
+
+
+.navbar-collapse img {
+    float: right;
+    width: 30px;
+    padding-top: 12px;
+    padding-right: 5px;
+
 }
 
 #user_name {
-
+    float: right;
     color: white;
-    font-size: 18px;
-    font-family: sans-serif;
-    text-align: center;
-    /*margin-top: 13px;
-    margin-right: 15px;*/
-    padding: 10px 15px 10px 2px;
+    padding-top: 15px;
+    padding-right: 5px;
+}
+
+#signer {
+    float: right;
+    color: white;
+    padding-top: 15px;
+    padding-right: 5px;
+}
+
+.navbar-nav button {
+    margin-top: 13px;
 }
 
 /* Style for the sign in button */
