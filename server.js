@@ -33,6 +33,8 @@ app.get("/hashcount/:hashtag/:hours/:geocode", routes.recentHashtags);
 
 app.get("/wordfrequency/:word/:hours/:geocode", routes.wordFrequency);
 
+app.get("/trendsandplaces/:lat/:long/:radius", routes.trendsandplaces);
+
 // Route for stream
 app.get("/streaming/:follow_params/:initialList", function(req, res) {
 
