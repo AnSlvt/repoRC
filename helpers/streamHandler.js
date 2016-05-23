@@ -1,6 +1,8 @@
-var twitter    = require('twit')
-    , auth     = require('../config/configTW')
-    , userInfo = require('../config/userInfo');
+var twitter = require('twit')
+    , auth  = require('../config/configTW')
+    , userInfo = require('../config/userInfo')
+    , NotificationHandler = require("./NotificationHandler")
+    , pusher = require('pusher');
 
 var stream = null;
 
@@ -39,6 +41,11 @@ module.exports = function(io, follow_params, list) {
                     // Does the JSON result have coordinates
                     if (data.coordinates && data.coordinates !== null) {
 
+                        NotificationHandler.publish(data);
+                        NotificationHandler.consume(function(tweet) {
+                            socket.emit("notification", tweet);
+                        });
+
                         console.log("================================================");
                         console.log("Tweet from " + data.user.name + "has coordinates");
 
@@ -47,7 +54,6 @@ module.exports = function(io, follow_params, list) {
                             "lat": data.coordinates.coordinates[0]
                             , "lng": data.coordinates.coordinates[1]
                         };
-                        //console.log("Coordinates are " + outputPoint.coords.latitude + ", " + outputPoint.coords.longitude);
                         console.log("================================================");
 
                         socket.broadcast.emit("twitter-stream", outputPoint);

@@ -220,29 +220,5 @@ module.exports = {
                 });
             });
         });
-
-        /* URLs and API keys
-        var mapsUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
-        var googleAPIKey = "AIzaSyDUfXDMc-ghv4glhDlaRvM6C_R_VBo81Y8"
-
-        // Call the Google Maps API
-        var mapsQuery = mapsUrl + "key=" + googleAPIKey + "&location="
-            + req.params.geocode + "&radius=" + req.params.radius;
-        request.get({ url : mapsQuery }, function(e, r, body) {
-            var jsonb = JSON.parse(body);
-            console.log("Places:");
-            console.log(jsonb);
-
-            // Check if there's at least one valid result
-            var results = jsonb.results;
-            if (results === null || results.length < 1) {
-                res.send("{ \"trends\": [], \"error\": \"No nearby places found\"}");
-            }
-
-            // Get the first place and call Yahoo
-            var vicinity = results[0].vicinity;
-            var yahoo = "http://where.yahooapis.com/v1/places.q";
-
-        }); */
     }
 }
