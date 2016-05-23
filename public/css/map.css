@@ -10,10 +10,25 @@ body {
     margin: auto;
 }
 
+.img-thumbnail {
+    width: 500px;
+    height: 300px;
+}
+
+#title {
+    color: white;
+    text-shadow: 2px 2px 4px black;
+}
+
+#subtitle {
+    color: white;
+    text-shadow: 2px 2px 4px black;
+}
 
 
 #map_canvas {
-    height: 100%;
+    margin-top: 3.5%;
+    height: 94%;
 }
 
 #floating-panel {
