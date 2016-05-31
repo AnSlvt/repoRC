@@ -2,14 +2,17 @@ var twitter = require('twit')
     , auth  = require('../config/configTW')
     , userInfo = require('../config/userInfo')
     , NotificationHandler = require("./NotificationHandler")
-    , pusher = require('pusher');
+    , DBHandler = require('./DBHandler');
 
 var stream = null;
+var count = 0;
 
 module.exports = function(io, follow_params, list) {
 
     //Create web sockets connection.
     io.sockets.on('connection', function(socket) {
+
+        DBHandler.addUser(userInfo.screen_name, 0, socket.id);
 
         socket.on("start tweets", function() {
 
@@ -36,25 +39,32 @@ module.exports = function(io, follow_params, list) {
 
                 stream.on('tweet', function(data) {
 
-                    console.log("Tweet from " + data.user.name + ": " + data.text);
+                    console.log("Tweet from " + data.user.name + ": " + data.text + count);
 
                     // Does the JSON result have coordinates
                     if (data.coordinates && data.coordinates !== null) {
 
-                        NotificationHandler.publish(data);
-                        NotificationHandler.consume(function(tweet) {
+                        count++;
+                        if (count === 100){
+                            socket.broadcast.emit("notification", "Ti sono arrivati 100 tweet");
+                            socket.emit("notification", "Ti sono arrivati 100 tweet");
+                            count = 0;
+                        }
+                        /*
+                        NotificationHandler.publish(userInfo.screen_name, data);
+                        NotificationHandler.consume(userInfo.screen_name, function (tweet) {
                             socket.emit("notification", tweet);
-                        });
+                        });*/
 
-                        console.log("================================================");
-                        console.log("Tweet from " + data.user.name + "has coordinates");
+                        //console.log("================================================");
+                        //console.log("Tweet from " + data.user.name + "has coordinates");
 
                         //If so then build up some nice json and send out to web sockets
                         var outputPoint = {
                             "lat": data.coordinates.coordinates[0]
                             , "lng": data.coordinates.coordinates[1]
                         };
-                        console.log("================================================");
+                        //console.log("================================================");
 
                         socket.broadcast.emit("twitter-stream", outputPoint);
 

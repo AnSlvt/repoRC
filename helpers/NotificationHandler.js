@@ -4,7 +4,7 @@ var amqp = require('amqplib/callback_api');
 
 module.exports = {
 
-    consume: function consume(callback) {
+    consume: function consume(screenname, callback) {
 
         // Consumer
         amqp.connect('amqp://localhost', function (err, conn) {
@@ -21,16 +21,16 @@ module.exports = {
                     process.exit;
                 }
 
-                ch.assertQueue("twitter-queue");
-                ch.consume('twitter-queue', function(msg) {
+                ch.assertQueue(screenname);
+                ch.consume(screenname, function(msg) {
                     callback(msg.content.toString()); // i pass it as a callback parameter
                     ch.ack(msg);
                 });
-            };
+            }
         });
     },
 
-    publish: function publish(tweet) {
+    publish: function publish(screenname, tweet) {
 
         amqp.connect('amqp://localhost', function (err, conn) {
             if (err != null) {
@@ -49,9 +49,9 @@ module.exports = {
                 }
 
                 var msg = tweet.user.name + ": " + tweet.text;
-                ch.assertQueue('twitter-queue', { durable: true });
-                ch.sendToQueue('twitter-queue', new Buffer(msg), { persistent: true });
-            };
+                ch.assertQueue(screenname, { durable: true });
+                ch.sendToQueue(screenname, new Buffer(msg), { persistent: true });
+            }
         });
     }
 }
