@@ -1,4 +1,5 @@
 var map, heatmap, center;
+var socket = null;
 
 function initMap() {
 
@@ -34,7 +35,7 @@ function initMap() {
 
     if (io !== undefined) {
 
-        var socket = io.connect('http://localhost:3000/');
+        socket = io.connect('http://localhost:3000/');
 
         // Image used for the marker
         var image = "../small-dot-icon.png";
@@ -42,11 +43,6 @@ function initMap() {
         socket.on("username", function(username) {
             document.getElementById('user_name').innerHTML = '@' + username;
         });
-
-        /*var tweet;
-        NotificationHandler.consume(tweet);
-        console.log(tweet);
-        */
 
         socket.on("initialList", function(list) {
 
@@ -140,4 +136,12 @@ function changeOpacity() {
 
 function recenter() {
     map.panTo(new google.maps.LatLng(center.coords.latitude, center.coords.longitude));
+}
+
+function logOutBtn() {
+    console.log("SONO QUIIIIIII");
+    if (socket !== null) {
+        socket.emit("logout");
+        window.location = "http://localhost:3000/"
+    }
 }

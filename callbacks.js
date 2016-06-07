@@ -27,8 +27,6 @@ module.exports = {
             var uri = 'https://api.twitter.com/oauth/authenticate' + '?'
                     + qs.stringify({ oauth_token: oauthToken });
             res.render("index", { twitterLink: uri });
-
-            // replace this with a sendFile
         });
     },
 
@@ -130,7 +128,7 @@ module.exports = {
         var query = url + "?q=" + req.params.word + "&geocode=" + req.params.geocode;
         console.log("Query URL:");
         console.log(query);
-        request.get({ url : query , oauth : auth }, function(e, r, body) {
+        request.get({ url : query, oauth : auth }, function(e, r, body) {
             var count = 0;
             var tweets = "";
             var jsonb = JSON.parse(body);

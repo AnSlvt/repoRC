@@ -14,8 +14,6 @@ module.exports = function(io, follow_params, list) {
         socket.on("start tweets", function() {
 
             var outputListOfPoints = list;
-            console.log("This is the received list:");
-            console.log(outputListOfPoints);
             socket.emit("initialList", outputListOfPoints);
             socket.emit("username", userInfo.screen_name);
 
@@ -33,6 +31,13 @@ module.exports = function(io, follow_params, list) {
 
                 //stream = twit.stream('statuses/filter', params);
                 stream = twit.stream('statuses/filter', { locations: '-180,-90,180,90' });
+
+                socket.on("logout", function() {
+                    console.log("ORA QUIIIIII");
+                    stream.stop();
+                    socket.disconnect(true);
+                    console.log("FATTO!");
+                });
 
                 stream.on('tweet', function(data) {
 
