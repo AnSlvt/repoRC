@@ -26,8 +26,6 @@ module.exports = function(UID, count, callback) {
                 "," + filtered[i].coordinates.coordinates[1];
                 if (i < filtered.length - 1) coordinates += "&";
             }
-            console.log("SERIALIZED:");
-            console.log(coordinates);
             callback(coordinates);
         }
     });

@@ -13,7 +13,9 @@ module.exports = {
                 console.error(err);
                 process.exit;
             }
-            conn.createChannel(channel);
+
+            if (conn !== null && conn != undefined) conn.createChannel(channel);
+
             function channel(err, ch) {
                 if (err != null) {
                     console.warn(err.stack);
@@ -38,7 +40,8 @@ module.exports = {
                 console.error(err);
                 process.exit;
             }
-            conn.createChannel(channel);
+
+            if (conn !== null && conn != undefined) conn.createChannel(channel);
 
             function channel(err, ch) {
 

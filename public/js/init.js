@@ -139,9 +139,9 @@ function recenter() {
 }
 
 function logOutBtn() {
-    console.log("SONO QUIIIIIII");
     if (socket !== null) {
         socket.emit("logout");
-        window.location = "http://localhost:3000/"
+        socket.disconnect(true);
+        window.location = "http://localhost:3000/";
     }
 }
