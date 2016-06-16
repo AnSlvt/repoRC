@@ -31,6 +31,7 @@ module.exports = {
                     + qs.stringify({ oauth_token: oauthToken });
             res.render("index", { twitterLink: uri });
 
+
             // replace this with a sendFile
         });
     },
@@ -38,7 +39,7 @@ module.exports = {
     // Callback to handle post authentication
     signedIn: function(req, res) {
 
-        DBHandler.creation();
+
         // Data after the authentication and before the authorization
         var authReqData = req.query;
         auth.token = authReqData.oauth_token;

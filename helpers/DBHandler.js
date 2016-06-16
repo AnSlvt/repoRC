@@ -9,11 +9,11 @@ exports.creation =  function creation() {
     mongoose.connect('mongodb://localhost:27017/ProgettoRC');
 
     db = mongoose.connection;
-    console.log(db);
+
     db.on('error', console.error.bind(console, 'connection error'));
 
     var UserSchema = new Schema({
-        screenname: String,
+        screenname: {type: String, unique: true},
         count: Number,
         socket_id: String
     });
@@ -31,6 +31,20 @@ exports.addUser =  function addUser(screenname, count, socket_id) {
         });
     }
 
+exports.getUser = function getUser(name,callback){
+    var query = UserModel.where({ screenname : name });
+    query.findOne(function (err, user) {
+        if (err) {
+            console.log(err);
+            return handleError(err);
+        }
+        var bool = false;
+        console.log(user);
+        if (user.screenname === "")  bool =true;
+        callback(bool);
+    });
+}
+
 exports.updateCount = function updateCount(name, count) {
         var query = UserModel.where({ screenname : name});
         query.findOne(function (err, user) {
@@ -38,6 +52,7 @@ exports.updateCount = function updateCount(name, count) {
             user.count = count;
         });
 }
+
 
 exports.getSocketID =  function getSocketID(name,callback) {
         var socket;

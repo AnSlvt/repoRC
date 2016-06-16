@@ -2,17 +2,49 @@ var twitter = require('twit')
     , auth  = require('../config/configTW')
     , userInfo = require('../config/userInfo')
     , NotificationHandler = require("./NotificationHandler")
+    , ConsumeHandler = require("./ConsumeHandler")
     , DBHandler = require('./DBHandler');
 
 var stream = null;
 var count = 0;
 
 module.exports = function(io, follow_params, list) {
-
     //Create web sockets connection.
     io.sockets.on('connection', function(socket) {
 
-        DBHandler.addUser(userInfo.screen_name, 0, socket.id);
+
+        socket.on("disconnect", function() {
+            console.log("CLIENT DISCONNECTED!!");
+            if (stream !== null) {
+                stream.stop();
+                stream = null;
+            }
+            console.log("NUMERO DI TWEET " +count);
+            var str = "Numero di tweet nella sessione precedente: " + count;
+            NotificationHandler.publish(userInfo.screen_name,str);
+            DBHandler.updateCount(userInfo.screen_name, count);
+            count = 0;
+            socket.disconnect(true);
+        });
+
+        DBHandler.getUser(userInfo.screen_name, function(bool){
+            if (bool)
+                DBHandler.addUser(userInfo.screen_name, 0, socket.id);
+            else{
+
+                var conta;
+                DBHandler.getCount(userInfo.screen_name, function(rit){
+                    conta = rit;
+                });
+
+                if (conta === 0) {
+                    NotificationHandler.consume(userInfo.screen_name, function (str) {
+                        console.log("Consumo");
+                        socket.emit('notification', str);
+                    });
+                }
+            }
+        });
 
         socket.on("start tweets", function() {
 
@@ -38,18 +70,14 @@ module.exports = function(io, follow_params, list) {
                 stream = twit.stream('statuses/filter', { locations: '-180,-90,180,90' });
 
                 stream.on('tweet', function(data) {
-
                     console.log("Tweet from " + data.user.name + ": " + data.text + count);
+
 
                     // Does the JSON result have coordinates
                     if (data.coordinates && data.coordinates !== null) {
 
                         count++;
-                        if (count === 100){
-                            socket.broadcast.emit("notification", "Ti sono arrivati 100 tweet");
-                            socket.emit("notification", "Ti sono arrivati 100 tweet");
-                            count = 0;
-                        }
+
                         /*
                         NotificationHandler.publish(userInfo.screen_name, data);
                         NotificationHandler.consume(userInfo.screen_name, function (tweet) {

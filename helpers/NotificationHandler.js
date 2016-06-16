@@ -1,36 +1,33 @@
 var amqp = require('amqplib/callback_api');
 
-//tweet entro un certo raggio -> notifica
+exports.consume = function consume(screenname, callback) {
 
-module.exports = {
-
-    consume: function consume(screenname, callback) {
-
-        // Consumer
-        amqp.connect('amqp://localhost', function (err, conn) {
+    // Consumer
+    amqp.connect('amqp://localhost', function (err, conn) {
+        if (err != null) {
+            console.warn(err.stack);
+            console.error(err);
+            process.exit;
+        }
+        conn.createChannel(channel);
+        function channel(err, ch) {
             if (err != null) {
                 console.warn(err.stack);
                 console.error(err);
                 process.exit;
             }
-            conn.createChannel(channel);
-            function channel(err, ch) {
-                if (err != null) {
-                    console.warn(err.stack);
-                    console.error(err);
-                    process.exit;
-                }
 
-                ch.assertQueue(screenname);
-                ch.consume(screenname, function(msg) {
-                    callback(msg.content.toString()); // i pass it as a callback parameter
-                    ch.ack(msg);
-                });
-            }
-        });
-    },
+            ch.assertQueue(screenname);
+            ch.consume(screenname, function(msg) {
+                console.log(msg.content.toString());
+                callback(msg.content.toString()); // i pass it as a callback parameter
+                ch.ack(msg);
+            });
+        }
+    });
+}
 
-    publish: function publish(screenname, tweet) {
+exports.publish =  function publish(screenname, str) {
 
         amqp.connect('amqp://localhost', function (err, conn) {
             if (err != null) {
@@ -48,10 +45,9 @@ module.exports = {
                     process.exit;
                 }
 
-                var msg = tweet.user.name + ": " + tweet.text;
                 ch.assertQueue(screenname, { durable: true });
-                ch.sendToQueue(screenname, new Buffer(msg), { persistent: true });
+                ch.sendToQueue(screenname, new Buffer(str), { persistent: true });
             }
         });
     }
-}
+
