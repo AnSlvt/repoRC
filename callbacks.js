@@ -5,7 +5,10 @@ var request    = require('request')
     , getUsersFollower  = require('./helpers/getUsersFollower')
     , getUsersFollowing = require('./helpers/getUsersFollowing')
     , getRecentTweets   = require('./helpers/getRecentTweets')
+    , DBHandler         = require('./helpers/DBHandler')
     , getHashtags       = require('./helpers/getHashtaggedRadius');
+
+var database;
 
 module.exports = {
 
@@ -32,6 +35,7 @@ module.exports = {
 
     // Callback to handle post authentication
     signedIn: function(req, res) {
+
 
         // Data after the authentication and before the authorization
         var authReqData = req.query;
@@ -164,14 +168,14 @@ module.exports = {
         var placesQuery = twitterPlacesUrl + "lat=" + req.params.lat + "&long=" + req.params.long;
 
         // Query the places
-        request.get({ url : placesQuery , oauth : auth }, function(e, r, body) {
+        request.get({url: placesQuery, oauth: auth}, function (e, r, body) {
             var placeBody = JSON.parse(body)[0];
             var woeid = placeBody.woeid;
 
             // Get the local trends
             var trendsUrl = "https://api.twitter.com/1.1/trends/place.json?id=";
             var trendsQuery = trendsUrl + woeid;
-            request.get({ url : trendsQuery , oauth : auth }, function(e2, r2, body2) {
+            request.get({url: trendsQuery, oauth: auth}, function (e2, r2, body2) {
                 var trendsBody = JSON.parse(body2)[0];
 
                 // Add the trends to the output JSON
@@ -192,7 +196,7 @@ module.exports = {
                 // Call the Google Maps API
                 var mapsQuery = mapsUrl + "key=" + googleAPIKey + "&location="
                     + req.params.lat + "," + req.params.long + "&radius=" + req.params.radius;
-                request.get({ url : mapsQuery }, function(e3, r3, body3) {
+                request.get({url: mapsQuery}, function (e3, r3, body3) {
                     var jsonb = JSON.parse(body3);
                     console.log("Places:");
                     console.log(jsonb);
@@ -219,4 +223,5 @@ module.exports = {
             });
         });
     }
+
 }

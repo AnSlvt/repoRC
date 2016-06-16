@@ -42,6 +42,7 @@ function initMap() {
 
         socket.on("username", function(username) {
             document.getElementById('user_name').innerHTML = '@' + username;
+            user_name = username;
         });
 
         socket.on("initialList", function(list) {
@@ -62,7 +63,6 @@ function initMap() {
         });
 
         socket.on("notification", function(data){
-            //console.log(data);
             noty({
                 text: data,
                 layout: "bottomLeft",
@@ -74,7 +74,6 @@ function initMap() {
         // This listens on the "twitter-steam" channel and data is
         // received everytime a new tweet is receieved.
         socket.on('twitter-stream', function(data) {
-
             // Add tweet to the heat map array.
             var tweetLocation = new google.maps.LatLng(data.lng, data.lat);
             liveTweets.push(tweetLocation);

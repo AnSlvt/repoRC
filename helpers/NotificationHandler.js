@@ -1,12 +1,36 @@
 var amqp = require('amqplib/callback_api');
 
-//tweet entro un certo raggio -> notifica
+exports.consume = function consume(screenname, callback) {
 
-module.exports = {
+    // Consumer
+    amqp.connect('amqp://localhost', function (err, conn) {
+        if (err != null) {
+            console.warn(err.stack);
+            console.error(err);
+            process.exit;
+        }
 
-    consume: function consume(callback) {
+        if (conn !== null && conn != undefined) conn.createChannel(channel);
 
-        // Consumer
+        function channel(err, ch) {
+            if (err != null) {
+                console.warn(err.stack);
+                console.error(err);
+                process.exit;
+            }
+
+            ch.assertQueue(screenname);
+            ch.consume(screenname, function(msg) {
+                console.log(msg.content.toString());
+                callback(msg.content.toString()); // i pass it as a callback parameter
+                ch.ack(msg);
+            });
+        }
+    });
+}
+
+exports.publish =  function publish(screenname, str) {
+
         amqp.connect('amqp://localhost', function (err, conn) {
             if (err != null) {
                 console.warn(err.stack);
@@ -17,44 +41,15 @@ module.exports = {
             if (conn !== null && conn != undefined) conn.createChannel(channel);
 
             function channel(err, ch) {
+
                 if (err != null) {
                     console.warn(err.stack);
                     console.error(err);
                     process.exit;
                 }
 
-                ch.assertQueue("twitter-queue");
-                ch.consume('twitter-queue', function(msg) {
-                    callback(msg.content.toString()); // i pass it as a callback parameter
-                    ch.ack(msg);
-                });
-            };
-        });
-    },
-
-    publish: function publish(tweet) {
-
-        amqp.connect('amqp://localhost', function (err, conn) {
-            if (err != null) {
-                console.warn(err.stack);
-                console.error(err);
-                process.exit;
+                ch.assertQueue(screenname, { durable: true });
+                ch.sendToQueue(screenname, new Buffer(str), { persistent: true });
             }
-
-            if (conn !== null && conn != undefined) conn.createChannel(channel);
-
-            function channel(err, ch) {
-
-                if (err != null) {
-                    console.warn(err.stack);
-                    console.error(err);
-                    process.exit;
-                }
-
-                var msg = tweet.user.name + ": " + tweet.text;
-                ch.assertQueue('twitter-queue', { durable: true });
-                ch.sendToQueue('twitter-queue', new Buffer(msg), { persistent: true });
-            };
         });
     }
-}

@@ -3,16 +3,59 @@ var twitter = require('twit')
     , userInfo = require('../config/userInfo')
     , NotificationHandler = require("./NotificationHandler")
     , qs = require('querystring')
-    , pusher = require('pusher');
+    , pusher = require('pusher')
+    , DBHandler = require('./DBHandler');
 
 var stream = null;
+var count = 0;
 
 process.setMaxListeners(0);
 
 module.exports = function(io, follow_params, list) {
-
     //Create web sockets connection.
     io.sockets.once('connection', function(socket) {
+
+        var disconnectCallback = function() {
+            console.log("CLIENT DISCONNECTED!!");
+            if (stream !== null) {
+                stream.stop();
+                stream = null;
+            }
+            socket.removeAllListeners();
+            socket.disconnect(true);
+            console.log("NUMERO DI TWEET " + count);
+            var str = "Numero di tweet nella sessione precedente: " + count;
+            NotificationHandler.publish(userInfo.screen_name,str);
+            DBHandler.updateCount(userInfo.screen_name, count);
+            delete auth.token;
+            delete auth.token_secret;
+            delete auth.verifier;
+            delete userInfo.UID;
+            delete userInfo.screen_name;
+            count = 0;
+        }
+
+        socket.on("disconnect", disconnectCallback);
+        socket.on("logout", disconnectCallback);
+
+        DBHandler.getUser(userInfo.screen_name, function(bool){
+            if (bool)
+                DBHandler.addUser(userInfo.screen_name, 0, socket.id);
+            else{
+
+                var conta;
+                DBHandler.getCount(userInfo.screen_name, function(rit){
+                    conta = rit;
+                });
+
+                if (conta === 0) {
+                    NotificationHandler.consume(userInfo.screen_name, function (str) {
+                        console.log("Consumo");
+                        socket.emit('notification', str);
+                    });
+                }
+            }
+        });
 
         socket.on("start tweets", function() {
 
@@ -35,36 +78,15 @@ module.exports = function(io, follow_params, list) {
                 //stream = twit.stream('statuses/filter', params);
                 stream = twit.stream('statuses/filter', { locations: '-180,-90,180,90' });
             }
-            
-            socket.on("logout", function() {
-
-                delete auth.token;
-                delete auth.token_secret;
-                delete auth.verifier;
-                delete userInfo.UID;
-                delete userInfo.screen_name;
-                stream.stop();
-                socket.removeAllListeners();
-                socket.disconnect(true);
-                stream = null;
-            });
-
-            var lastTweetId = -1;
 
             stream.on('tweet', function(data) {
-
-                if (lastTweetId === data.id) return;
-                lastTweetId = data.id;
 
                 console.log("Tweet from " + data.user.name + ": " + data.text);
 
                 // Does the JSON result have coordinates
                 if (data.coordinates && data.coordinates !== null) {
 
-                    NotificationHandler.publish(data);
-                    NotificationHandler.consume(function(tweet) {
-                        socket.emit("notification", tweet);
-                    });
+                    count++;
 
                     console.log("================================================");
                     console.log("Tweet from " + data.user.name + "has coordinates");

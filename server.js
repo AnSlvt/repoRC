@@ -2,6 +2,7 @@
 var streamHandler = require('./helpers/streamHandler')
     , express     = require('express')
     , http        = require('http')
+    , DBHandler   = require('./helpers/DBHandler')
     , helpers     = require('express-helpers')
     , routes      = require('./callbacks');
 
@@ -10,6 +11,7 @@ var streamHandler = require('./helpers/streamHandler')
 var app = express();
 helpers(app);
 var port = process.env.PORT || 3000;
+DBHandler.creation();
 
 // Set haml as the templating engine
 //app.engine('.haml', require('hamljs').renderFile);
