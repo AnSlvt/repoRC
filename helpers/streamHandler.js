@@ -7,10 +7,12 @@ var twitter = require('twit')
 
 var stream = null;
 
+process.setMaxListeners(0);
+
 module.exports = function(io, follow_params, list) {
 
     //Create web sockets connection.
-    io.sockets.on('connection', function(socket) {
+    io.sockets.once('connection', function(socket) {
 
         socket.on("start tweets", function() {
 
@@ -33,8 +35,7 @@ module.exports = function(io, follow_params, list) {
                 //stream = twit.stream('statuses/filter', params);
                 stream = twit.stream('statuses/filter', { locations: '-180,-90,180,90' });
             }
-            else stream.start();
-
+            
             socket.on("logout", function() {
 
                 delete auth.token;
@@ -45,9 +46,15 @@ module.exports = function(io, follow_params, list) {
                 stream.stop();
                 socket.removeAllListeners();
                 socket.disconnect(true);
+                stream = null;
             });
 
+            var lastTweetId = -1;
+
             stream.on('tweet', function(data) {
+
+                if (lastTweetId === data.id) return;
+                lastTweetId = data.id;
 
                 console.log("Tweet from " + data.user.name + ": " + data.text);
 
