@@ -8,56 +8,67 @@ var twitter = require('twit')
 
 var stream = null;
 var count = 0;
+var messagePresence = false;
 
 process.setMaxListeners(0);
 
 module.exports = function(io, follow_params, list) {
+
     //Create web sockets connection.
     io.sockets.once('connection', function(socket) {
 
+        // function called as a callback on every disconnect event
         var disconnectCallback = function() {
-            console.log("CLIENT DISCONNECTED!!");
+
+            // stop the stream if exist and disconnect the socket
             if (stream !== null) {
                 stream.stop();
                 stream = null;
             }
             socket.removeAllListeners();
             socket.disconnect(true);
+
+            // handle the notification, publish the message to be consumed
             console.log("NUMERO DI TWEET " + count);
             var str = "Numero di tweet nella sessione precedente: " + count;
-            NotificationHandler.publish(userInfo.screen_name,str);
+            NotificationHandler.publish(userInfo.screen_name, str);
             DBHandler.updateCount(userInfo.screen_name, count);
+            messagePresence = true;
+
+            // delete the user specific info
             delete auth.token;
             delete auth.token_secret;
             delete auth.verifier;
             delete userInfo.UID;
             delete userInfo.screen_name;
+
+            // reset the received message
             count = 0;
         }
 
         socket.on("disconnect", disconnectCallback);
         socket.on("logout", disconnectCallback);
 
-        DBHandler.getUser(userInfo.screen_name, function(bool){
-            if (bool)
-                DBHandler.addUser(userInfo.screen_name, 0, socket.id);
-            else{
-
-                var conta;
-                DBHandler.getCount(userInfo.screen_name, function(rit){
-                    conta = rit;
-                });
-
-                if (conta === 0) {
-                    NotificationHandler.consume(userInfo.screen_name, function (str) {
-                        console.log("Consumo");
-                        socket.emit('notification', str);
-                    });
-                }
-            }
-        });
-
         socket.on("start tweets", function() {
+
+            // when the browser is connected check for user
+            DBHandler.getUser(userInfo.screen_name, function(notFound) {
+
+                // verify if the user is on the db or is a new user
+                if (notFound) DBHandler.addUser(userInfo.screen_name, 0, socket.id);
+                else {
+
+                    if (messagePresence) {
+
+                        // if the user exist in the db there is a message for him
+                        NotificationHandler.consume(userInfo.screen_name, function(str) {
+                            console.log("Consumo");
+                            socket.emit('notification', str);
+                            messagePresence = false;
+                        });
+                    }
+                }
+            });
 
             var outputListOfPoints = list;
             socket.emit("initialList", outputListOfPoints);
@@ -81,22 +92,22 @@ module.exports = function(io, follow_params, list) {
 
             stream.on('tweet', function(data) {
 
-                console.log("Tweet from " + data.user.name + ": " + data.text);
+                //console.log("Tweet from " + data.user.name + ": " + data.text);
 
                 // Does the JSON result have coordinates
                 if (data.coordinates && data.coordinates !== null) {
 
                     count++;
 
-                    console.log("================================================");
-                    console.log("Tweet from " + data.user.name + "has coordinates");
+                    /*console.log("================================================");
+                    console.log("Tweet from " + data.user.name + "has coordinates");*/
 
                     //If so then build up some nice json and send out to web sockets
                     var outputPoint = {
                         "lat": data.coordinates.coordinates[0]
                         , "lng": data.coordinates.coordinates[1]
                     };
-                    console.log("================================================");
+                    //console.log("================================================");
 
                     socket.broadcast.emit("twitter-stream", outputPoint);
 

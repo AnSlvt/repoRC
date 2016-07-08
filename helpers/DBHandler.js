@@ -50,6 +50,9 @@ exports.updateCount = function updateCount(name, count) {
         query.findOne(function (err, user) {
             if (err) console.log(err);
             user.count = count;
+            user.save(function(err) {
+                if (err) console.log(err); 
+            });
         });
 }
 
