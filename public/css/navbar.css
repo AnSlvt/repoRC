@@ -4,6 +4,12 @@
     padding: 13px 5px;
 }
 
+#logout {
+    float: right;
+    margin-top: 15px;
+    margin-right: 10px;
+}
+
 .navbar-brand img {
     float: left;
     width: 25px;
@@ -11,7 +17,7 @@
     top: 0;
     bottom: 0;
     left: auto;
-    right: 150;
+    right: 150px;
     margin: auto;
 }
 
@@ -22,6 +28,7 @@
     padding-top: 15px;
     padding-right: 5px;
 }
+
 
 #navbar-title {
     color: white;
@@ -45,8 +52,4 @@
 
 #signer a:hover {
     background-color: #404040;
-}
-
-.navbar-nav button {
-    margin-top: 13px;
 }
