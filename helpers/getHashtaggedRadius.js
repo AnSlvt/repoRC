@@ -24,14 +24,6 @@ module.exports = function(tag, geocode, callback) {
 
     request.get({ url: url.concat(params), oauth: auth }, function(e, r, body) {
 
-        var partialRet = {
-
-            text: ""
-            , author: ""
-            , date: ""
-            , distance: ""
-        };
-
         var ret = [];
 
         var jsonb = JSON.parse(body)
@@ -42,9 +34,13 @@ module.exports = function(tag, geocode, callback) {
 
         for (var i = 0; i < statuses.length; i++) {
 
-            partialRet.text = statuses[i].text
-            partialRet.author = statuses[i].name
-            partialRet.date = statuses[i].created_at;
+            var partialRet = {
+
+                text: statuses[i].text
+                , author: statuses[i].name
+                , date: statuses[i].created_at
+                , distance: -1
+            };
 
             if (statuses[i].coordinates !== null) {
                 var tweetlng = statuses[i].coordinates.coordinates[0]
@@ -54,6 +50,6 @@ module.exports = function(tag, geocode, callback) {
             ret.push(partialRet);
         }
 
-        callback(JSON.stringify(ret));
+        callback("{ \"tweets\": " + JSON.stringify(ret) + "}");
     });
 }

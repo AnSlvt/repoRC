@@ -3,14 +3,14 @@ var amqp = require('amqplib/callback_api');
 exports.consume = function consume(screenname, callback) {
 
     // Consumer
-    amqp.connect('amqp://localhost', function (err, conn) {
+    amqp.connect('amqp://localhost', function(err, conn) {
         if (err != null) {
             console.warn(err.stack);
             console.error(err);
             process.exit;
         }
 
-        if (conn !== null && conn != undefined) conn.createChannel(channel);
+        if (conn !== null && conn !== undefined) conn.createChannel(channel);
 
         function channel(err, ch) {
             if (err != null) {
@@ -39,7 +39,7 @@ exports.publish = function publish(screenname, str) {
             process.exit;
         }
 
-        if (conn !== null && conn != undefined) conn.createChannel(channel);
+        if (conn !== null && conn !== undefined) conn.createChannel(channel);
 
         function channel(err, ch) {
 
