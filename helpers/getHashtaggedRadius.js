@@ -1,5 +1,5 @@
-var request    = require('request')
-    , auth     = require('../config/configTW');
+var request = require('request')
+    , auth  = require('../config/configTW');
 
 function measure(lat1, lon1, lat2, lon2) {
 

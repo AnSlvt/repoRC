@@ -23,7 +23,8 @@ exports.consume = function consume(screenname, callback) {
             ch.consume(screenname, function(msg) {
                 console.log(msg.content.toString());
                 callback(msg.content.toString()); // i pass it as a callback parameter
-                ch.ack(msg);
+                ch.ackAll();
+                //ch.ack(msg);
                 ch.close();
             });
         }
@@ -49,8 +50,11 @@ exports.publish = function publish(screenname, str) {
                 process.exit;
             }
 
+            var buf = new Buffer(str);
+            console.log(buf.toString());
+
             ch.assertQueue(screenname, { durable: true });
-            ch.sendToQueue(screenname, new Buffer(str), { persistent: true });
+            ch.sendToQueue(screenname, buf, { persistent: true });
         }
     });
 }

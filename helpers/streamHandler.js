@@ -1,10 +1,10 @@
-var twitter = require('twit')
-    , auth  = require('../config/configTW')
-    , userInfo = require('../config/userInfo')
+var twitter               = require('twit')
+    , auth                = require('../config/configTW')
+    , userInfo            = require('../config/userInfo')
     , NotificationHandler = require("./NotificationHandler")
-    , qs = require('querystring')
-    , pusher = require('pusher')
-    , DBHandler = require('./DBHandler');
+    , qs                  = require('querystring')
+    , pusher              = require('pusher')
+    , DBHandler           = require('./DBHandler');
 
 var stream = null;
 var count = 0;
@@ -31,9 +31,13 @@ module.exports = function(io, follow_params, list) {
             // handle the notification, publish the message to be consumed
             console.log("NUMERO DI TWEET " + count);
             var str = "Numero di tweet nella sessione precedente: " + count;
+            console.log(str);
             NotificationHandler.publish(userInfo.screen_name, str);
             DBHandler.updateCount(userInfo.screen_name, count);
             messagePresence = true;
+
+            // reset the received message
+            count = 0;
 
             // delete the user specific info
             delete auth.token;
@@ -41,9 +45,6 @@ module.exports = function(io, follow_params, list) {
             delete auth.verifier;
             delete userInfo.UID;
             delete userInfo.screen_name;
-
-            // reset the received message
-            count = 0;
         }
 
         socket.on("disconnect", disconnectCallback);
@@ -64,6 +65,7 @@ module.exports = function(io, follow_params, list) {
                         NotificationHandler.consume(userInfo.screen_name, function(str) {
                             console.log("Consumo");
                             socket.emit('notification', str);
+                            console.log(str);
                             messagePresence = false;
                         });
                     }
@@ -98,6 +100,7 @@ module.exports = function(io, follow_params, list) {
                 if (data.coordinates && data.coordinates !== null) {
 
                     count++;
+                    console.log(count);
 
                     /*console.log("================================================");
                     console.log("Tweet from " + data.user.name + "has coordinates");*/
