@@ -23,9 +23,8 @@ body {
 
 
 #map_canvas {
-    /*margin-top: 3.5%; */
-    height: 100%;
-    /*margin: auto;*/
+    margin-top: 51px;
+    height: 94.7%;
 }
 
 #floating-panel {
